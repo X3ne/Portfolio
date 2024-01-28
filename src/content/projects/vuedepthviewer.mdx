@@ -1,0 +1,75 @@
+---
+title: Vue Depth Viewer
+publishDate: 2023-12-18 00:00:00
+description: |
+  Npm package to simulate a fake 3d view with depth map and WebGL for your vue apps.
+tags:
+  - Vue
+  - Nuxt
+  - Depthmap
+  - WebGL
+github_url: https://github.com/X3ne/vue-depth-viewer
+icon: mdi:axis
+---
+import DepthViewer from '../../components/DepthViewer.vue'
+
+<DepthViewer client:load />
+
+<br />
+
+I loved doing this project, it allowed me to learn about CI/CD, WebGL,
+the world of depthmaps and how to bundle an npm module. To use this package you just have
+to install it in your vue or nuxt projects with `pnpm install vue-depth-viewer`.
+I've tried to create a package that's easy to use, but unfortunately the results can't be 100% satisfactory,
+depending on the depthmap used.
+For the example above, I used [ZoeDepth](https://huggingface.co/spaces/shariqfarooq/ZoeDepth)
+and inverted the depthmap colors (white means greater distance).
+
+<br />
+
+To import the viewer into your app, just import the component and the css and add it to your template.
+
+```vue
+<script setup>
+import VueDepthViewer from "vue-depth-viewer"
+import "vue-depth-viewer/style.css"
+</script>
+
+<template>
+<VueDepthViewer
+  :img="image"
+  :depth-img="depth"
+  :options="{
+    horizontalThreshold: 30,
+    verticalThreshold: 150,
+  }"
+/>
+</template>
+```
+
+I've added options to make the component more modular:
+
+```ts
+export interface DepthViewerOptions {
+  horizontalThreshold?: number
+  verticalThreshold?: number
+  crop?: boolean
+  useMouse?: boolean
+  useScreen?: boolean
+}
+```
+
+`horizontalThreshold` and `verticalThreshold` are the values that define the strength of the parallax effect.
+
+`crop` is a useful boolean if you want to put the viewer in a container,
+the image will crop to take up all the space in the container (similar to `background-size: cover;` in css)
+
+`useMouse` is a boolean that allows you to enable or disable the mouse parallax effect.
+
+`useScreen` is a boolean that allows you to use the mouse parallax effect outside the container.
+
+<br />
+
+I like the results when the depthmap is of good quality.
+I know there are still a few details and issues to fix out,
+but on the whole it works well.

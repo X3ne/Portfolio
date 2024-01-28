@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/Layout.astro'
+
+import Hero from '../components/Hero.astro'
+import CallToAction from '../components/CallToAction.astro'
+---
+
+<BaseLayout>
+	<div class="flex items-center">
+		<header class="mt-40">
+			<Hero
+				title="Welcome"
+				tagline="I'm Arthur, a web developer based in France"
+			>
+				<CallToAction href="/projects" >
+					<button class="bg-primary-500 text-surface-mixed-100 px-4 py-2 text-lg rounded-full">
+						Projects
+					</button>
+				</CallToAction>
+			</Hero>
+		</header>
+	</div>
+</BaseLayout>

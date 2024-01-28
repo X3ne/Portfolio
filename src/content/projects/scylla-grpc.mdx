@@ -1,0 +1,117 @@
+---
+title: Scylla gRPC
+publishDate: 2023-9-30 00:00:00
+description: |
+  Little project to learn gRPC and ScyllaDB.
+tags:
+  - Go
+  - GRPC
+  - Protobuf
+  - ScyllaDB
+  - Docker
+github_url: https://github.com/X3ne/go-scylla-grpc
+icon: devicon-plain:grpc
+---
+The reason I was interested in go was also to explore the world of gRPC with protobuf.
+[ScyllaDB](https://www.scylladb.com/) also interested me because of its impressive scalability. ScyllaDB is the C++ version of Cassandra
+[Cassandra](https://cassandra.apache.org/_/index.html) (Java),
+which makes it possible to do away with jvm and garbage collection. Why not bring these two subjects together and launch a project?
+It's a fairly straightforward project involving ScyllaDB setup with docker, very simple authentication with jwt and routes to retrieve users.
+
+<br />
+
+# Why gRPC
+
+[gRPC](https://fr.wikipedia.org/wiki/GRPC) is an RPC (Remote Procedure Call) framework based on
+[HTTP/2](https://fr.wikipedia.org/wiki/Hypertext_Transfer_Protocol/2). It uses Protocol Buffers as IDL (Interface Description Language)
+instead of json, which brings significant advantages: it's language agnostic (we can implement our logic in several languages thanks to gRPC's code generation),
+protobuf serializes our data in binary, which drastically improves serialization/deserialization and optimizes communication between client and server.
+
+<br />
+
+gRPC also provides a variety of communication options,
+
+<br />
+
+#### Unary RPC:
+Like REST, the client sends a single request and receives a single response from the server.
+
+<br />
+
+#### Server streaming RPC:
+Like unary RPC, the client sends a single request, but the server responds with a stream of messages.
+
+<br />
+
+#### Client streaming RPC:
+This is the opposite of server-streaming RPC: the client sends a stream of messages to the server,
+and the server responds with a single message after receiving all the client's messages.
+
+<br />
+
+#### Bidirectional streaming RPC
+Here the call is initiated by the client and the server can either respond or wait for the client to start streaming messages.
+The client and server can read and write messages in any order, with the server either waiting for the client to send all its messages before replying with server messages,
+or the client and server can play "ping-pong", with the client sending a message and the server replying, and so on.
+
+<br />
+<br />
+
+gRPC itself offers interesting features, such as the  [multiplexing](https://en.wikipedia.org/wiki/Multiplexing) provided by HTTP/2,
+[Deadlines/Timeouts](https://grpc.io/docs/what-is-grpc/core-concepts/#deadlines),
+[RPC termination](https://grpc.io/docs/what-is-grpc/core-concepts/#rpc-termination) and the
+[ability to stop](https://grpc.io/docs/what-is-grpc/core-concepts/#cancelling-an-rpc) a request at any time.
+
+<br />
+
+Instead of google's simple gRPC framework, I use [connect](https://connectrpc.com/) developped by buf. It's a collection of libraries around gRPC that provides libraries for browsers, nodejs, go...
+
+<br />
+
+# ScyllaDB workers
+
+ScyllaDB is a NoSQL database, it's a key-value store. It's a distributed database, which means that it can be scaled horizontally by adding nodes.
+But in ScyllaDB when a large number of requests are made on a node, "hot partitions" appear. This is simply a hardware limitation,
+which may be due to the CPU or IOs simply being overloaded.
+
+<br />
+
+### POC
+
+To remedy this problem (which isn't a problem at my scale), I've gone for a workers system.
+When the api get a request and needs to access the database a new worker is created with the query stored.
+If the service already has an worker with this query the request is subscribed to that worker and when the
+database query is completed the response is sent to all subscribers.
+
+This is useful when the server receives concurrent requests with the same database query, allowing a single query to be executed on the database.
+
+```text
+
+┌────────────┐  ┌────────────┐ ┌────────────┐ ┌────────────┐
+│ Request #1 │  │ Request #2 │ │ Request #3 │ │ Request #4 │
+│            │  │            │ │            │ │            │
+│ Id: 1      │  │ Id: 1      │ │ Id: 1      │ │ Id: 2      │
+└──────┬─────┘  └──────┬─────┘ └─────┬──────┘ └──────┬─────┘
+       │               │             │               │
+       │               │             │               │
+┌──────▼───────────────▼─────────────▼──────┐ ┌──────▼─────┐
+│ Worker #1                                 │ │ Worker #2  │
+│                                           │ │            │
+│ Query: [query statement="SELECT * FROM    │ │ Query: [...│
+│ users WHERE id=? LIMIT 1 ALLOW FILTERING" │ │ values=[2]]│
+│ values=[1] consistency=QUORUM]            │ │            │
+└──────────────────────┬────────────────────┘ └──────┬─────┘
+                       │                             │
+┌──────────────────────▼─────────────────────────────▼─────┐
+│                      Scylla Database                     │
+└──────────────────────────────────────────────────────────┘
+
+```
+
+<br />
+
+# Conclusion
+
+gRPC is a powerfull framework, it's a good alternative to REST. I like protobuf to write my methods and messages, it's simple and fast to integrate in a project.
+With the server reflection we can easily create a client to test our api in various tools like postman or gRPCui.
+gRPC shines in the world of microservices, which is definitely an area I'd like to explore.
