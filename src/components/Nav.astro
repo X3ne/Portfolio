@@ -1,13 +1,10 @@
 ---
-import ToggleTheme from "~/components/common/ToggleTheme.astro";
-
-const textLinks: { label: string; href: string }[] = [
+const textLinks: { label: string, href: string }[] = [
 	{ label: 'Home', href: '/' },
-	{ label: 'Projects', href: '/projects' },
 ]
 ---
 
-<nav class="fixed top-0 left-0 w-screen px-6 py-2 bg-default/70 backdrop-blur z-40">
+<nav class="fixed top-0 left-0 w-screen px-6 py-4 bg-default/70 backdrop-blur z-40">
 	<div class="flex flex-row justify-between items-center max-w-screen-2xl mx-auto">
 		<div class="flex gap-4 h-fit">
 			{
@@ -21,7 +18,7 @@ const textLinks: { label: string; href: string }[] = [
 									(href !== '/' && Astro.url.pathname.startsWith(href)),
 							},
 						]}
-						class="relative after:absolute after:bg-primary-500 after:w-0 hover:after:w-full after:h-[2px] after:bottom-0 after:left-0 after:transition-all after:ease-in-out"
+						class="relative after:absolute after:bg-black after:w-0 hover:after:w-full after:h-[2px] after:bottom-0 after:left-0 after:transition-all after:ease-in-out"
 						href={href}
 					>
 						{label}
@@ -29,7 +26,6 @@ const textLinks: { label: string; href: string }[] = [
 				))
 			}
 		</div>
-		<ToggleTheme />
 	</div>
 </nav>
 <style>

@@ -21,7 +21,7 @@ const { Content } = await entry.render()
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
-	<div class="flex flex-col justify-center items-center gap-8 max-w-4xl p-8 pb-32 mx-auto">
+	<div class="flex flex-col justify-center items-center gap-8 py-8 pb-32">
 		<header>
 			<Hero title={entry.data.title}>
 				<div class="flex gap-2 mt-2 justify-center flex-wrap">
@@ -37,11 +37,9 @@ const { Content } = await entry.render()
 						<span>Github</span>
 					</a>
 				}
-
-				<p class="max-w-4xl text-lg first-letter:ml-6">{entry.data.description}</p>
 			</Hero>
 		</header>
-		<main class="flex flex-col justify-center gap-4 w-full mx-auto">
+		<main class="flex flex-col justify-center gap-4 w-full max-w-5xl">
 			<div class="text-lg [&>p:first-child]:first-letter:ml-6 [&>*>a]:relative [&>*>a]:after:absolute [&>*>a]:after:bottom-0 [&>*>a]:after:left-0 [&>*>a]:after:w-full [&>*>a]:after:h-[2px] [&>*>a]:after:bg-black [&>h1]:mb-2 [&>pre]:rounded-md [&>pre]:py-6 [&>pre]:px-4 [&>pre]:my-4 [&>pre>code]:bg-transparent [&>*>img]:rounded-md [&>*>img]:my-2 [&>*>img]:mx-auto [&>*>img]:cursor-pointer" >
 				<Content />
 			</div>

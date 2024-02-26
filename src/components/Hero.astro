@@ -1,16 +1,16 @@
 ---
 interface Props {
-	title: string;
-	tagline?: string;
+	title: string
+	tagline?: string
 }
 
-const { tagline, title } = Astro.props;
+const { tagline, title } = Astro.props
 ---
 
 <div class="flex flex-col gap-4 items-center justify-center w-screen px-8">
 	<div>
-		<h1 class="text-5xl md:text-8xl font-bold">{title}</h1>
-		{tagline && <p>{tagline}</p>}
+		<h1 class="text-5xl font-semibold">{title}</h1>
+		{tagline && <p class="text-center">{tagline}</p>}
 	</div>
 	<slot />
 </div>

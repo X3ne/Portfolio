@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content'
 import { Icon } from 'astro-icon/components'
 
 interface Props {
-	project: CollectionEntry<'projects'>;
+	project: CollectionEntry<'projects'>
 }
 
 const { data, slug } = Astro.props.project
@@ -11,11 +11,11 @@ const { data, slug } = Astro.props.project
 
 <div class="hover:-translate-y-1 transition-transform">
   <a href={`/projects/${slug}`}>
-    <div class="group relative flex flex-col p-8 bg-gray-100 dark:bg-surface-mixed-300 h-full rounded-xl">
+    <div class="group relative flex flex-col p-8 bg-gray-100 h-full rounded-xl shadow-sm">
       <div class="flex flex-row gap-8">
         {
           data.icon && (
-            <div class="flex items-center justify-center h-16 aspect-square p-2 rounded-xl text-white shadow-md" class:list={data.color ?? 'bg-primary-100'} style={data.color && `background-color: ${data.color}`}>
+            <div class="flex items-center justify-center h-16 aspect-square p-2 rounded-xl text-white shadow-md" class:list={data.color ?? 'bg-black'} style={data.color && `background-color: ${data.color}`}>
               {
                 data.icon.startsWith('http') ? (
                   <img src={data.icon} alt={data.title} class="object-contain w-10 h-10" />
@@ -28,7 +28,7 @@ const { data, slug } = Astro.props.project
         }
         <div>
           <h1 class="text-xl font-semibold">{ data.title }</h1>
-          <p class="text-sm text-gray-400 line-clamp-3 mt-2">{ data.description }</p>
+          <p class="text-sm text-gray-600 line-clamp-3 mt-2">{ data.description }</p>
         </div>
       </div>
       <div>
